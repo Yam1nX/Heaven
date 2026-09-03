@@ -1,0 +1,76 @@
+<!--
+  Quiet Atelier reminder: the document shell supports a warm editorial furniture-studio identity.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="theme-color" content="#183B3A" />
+    <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' rx='16' fill='%23183B3A'/%3E%3Cpath d='M42 116V44l38 42 38-42v72M42 80h76' fill='none' stroke='%23C4A064' stroke-width='7' stroke-linecap='square' stroke-linejoin='miter'/%3E%3Cpath d='M80 86v30' stroke='%23F5F0E8' stroke-width='4'/%3E%3C/svg%3E" />
+    <meta name="description" content="Heaven Furniture Mart — bespoke furniture and interior styling, crafted around you in Chattogram." />
+    <link rel="canonical" href="https://www.heavenfurnituremart.com/" />
+    <title>Heaven Furniture Mart — Crafted Around You</title>
+
+    <!-- Open Graph / social preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Heaven Furniture Mart" />
+    <meta property="og:title" content="Heaven Furniture Mart — Crafted Around You" />
+    <meta property="og:description" content="Bespoke furniture and interior styling, designed and crafted around your space in Chattogram." />
+    <meta property="og:image" content="https://www.heavenfurnituremart.com/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://www.heavenfurnituremart.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Heaven Furniture Mart — Crafted Around You" />
+    <meta name="twitter:description" content="Bespoke furniture and interior styling, designed and crafted around your space in Chattogram." />
+    <meta name="twitter:image" content="https://www.heavenfurnituremart.com/og-cover.jpg" />
+
+    <!-- Local business structured data, for search/knowledge-panel eligibility -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FurnitureStore",
+        "name": "Heaven Furniture Mart",
+        "description": "Bespoke furniture and interior styling — sofas, beds, dining sets, and office pieces designed and crafted around the customer's space.",
+        "url": "https://www.heavenfurnituremart.com/",
+        "telephone": "+880-1960-481983",
+        "email": "heavenfurnituremart@gmail.com",
+        "foundingDate": "2020",
+        "founder": { "@type": "Person", "name": "Abul Kalam Bhuiyan" },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Agrabad Access Road",
+          "addressLocality": "Chattogram",
+          "addressCountry": "BD"
+        },
+        "sameAs": [
+          "https://facebook.com/HeavenFurnitureMart",
+          "https://instagram.com/heaven_furniture_ltd",
+          "https://www.youtube.com/@HeavenFurnitureMart"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!--
+      Optional analytics: only injected when both env vars are actually set at build time,
+      so we never ship a broken request pointing at an undefined endpoint. Set
+      VITE_ANALYTICS_ENDPOINT and VITE_ANALYTICS_WEBSITE_ID in your environment to enable.
+    -->
+    <script type="module">
+      const endpoint = import.meta.env.VITE_ANALYTICS_ENDPOINT;
+      const websiteId = import.meta.env.VITE_ANALYTICS_WEBSITE_ID;
+      if (endpoint && websiteId) {
+        const s = document.createElement("script");
+        s.defer = true;
+        s.src = `${endpoint}/umami`;
+        s.dataset.websiteId = websiteId;
+        document.head.appendChild(s);
+      }
+    </script>
+  </body>
+</html>
