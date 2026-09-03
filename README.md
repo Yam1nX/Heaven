@@ -1,8 +1,9 @@
-# Heaven Furniture Mart — Landing Page
+# Heaven Furniture Mart - Landing Page
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+<img width="1889" height="909" alt="image" src="https://github.com/user-attachments/assets/5a6792a9-5958-4e28-808e-086638faa3c9" />
 
-Bespoke-furniture landing page for Heaven Furniture Mart (Chattogram, Bangladesh).
+
+Furniture landing page for Heaven Furniture Mart (Chattogram, Bangladesh).
 "Quiet Atelier" art direction — editorial, image-led, one primary conversion action —
 plus an AI Room Guide that turns a room photo and a short brief into practical,
 personalized guidance before handing the visitor to WhatsApp.
@@ -52,33 +53,4 @@ input and JSON schema output — matching what this feature needs). There's no
 database and no login flow in this project, so **for a live demo,
 `OPENAI_API_KEY` is the only credential you actually need.**
 
-## Deploying a live demo (for a CV / portfolio link)
 
-1. Get an OpenAI API key at platform.openai.com and set `OPENAI_API_KEY` in
-   your host's environment variables.
-2. Push this repo to GitHub.
-3. Deploy on [Render](https://render.com) (or Railway) as a Node web service:
-   - Build command: `npm install && npm run build`
-   - Start command: `npm start`
-   - Add the `OPENAI_API_KEY` env var in the dashboard.
-4. That's it — no database required. `npm start` serves both the API and the
-   static frontend from a single Node process on `PORT`.
-
-This gets you a real, working, clickable URL for your CV — with the AI Room
-Guide actually functional, not just a UI mockup.
-
-## SEO / sharing
-
-`client/index.html` ships Open Graph, Twitter Card, and `FurnitureStore` JSON-LD
-structured data, plus `robots.txt` and `sitemap.xml` in `client/public/`. All of these
-currently point at the placeholder domain `https://www.heavenfurnituremart.com/` —
-swap in the real domain once one is registered, and add a real `og-cover.jpg`
-(1200×630) to `client/public/`.
-
-## Content still needed from the client
-
-The gallery and collection imagery currently mix Unsplash stock photography with
-sourced stills from Heaven's own YouTube channel (see `gallery-sources.md`). Before
-a real launch, swap in actual showroom and completed-project photography — it's the
-single biggest remaining gap between "demo" and "the client's real site," and real
-photos will always read as more credible than stock.
