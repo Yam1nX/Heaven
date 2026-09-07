@@ -50,11 +50,21 @@
 }
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   background: var(--ivory);
+}
+/* Safety net so any image without its own explicit sizing (e.g. inline
+   content images) can never force horizontal scroll on narrow viewports.
+   More specific rules elsewhere (width/height/object-fit on .foo img)
+   still win, so this doesn't change any existing image treatment. */
+img {
+  max-width: 100%;
+  height: auto;
 }
 a {
   color: inherit;
@@ -677,191 +687,6 @@ h2 {
 .text-link:hover {
   gap: 18px;
   color: var(--brass);
-}
-
-/* Section 02 — studio overview: a photo beside one panel that stretches to match
-   its height (CSS grid stretch, no JS), so the metric list and the day-one
-   inclusions share the photo's full height instead of leaving dead space below. */
-.studio-overview-section {
-  background: var(--ivory);
-}
-.studio-overview-section .section-heading-row > p {
-  max-width: 360px;
-}
-.overview-grid {
-  display: grid;
-  grid-template-columns: minmax(220px, 0.62fr) 1fr;
-  gap: var(--gap-lg);
-}
-.overview-photo {
-  margin: 0;
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-}
-.overview-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.92);
-  transition: transform 0.6s var(--ease-out);
-}
-.overview-photo:hover img {
-  transform: scale(1.04);
-}
-.overview-photo figcaption {
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  z-index: 1;
-  color: var(--ivory);
-  font-size: 8.5px;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  background: rgba(20, 40, 38, 0.6);
-  backdrop-filter: blur(6px);
-  padding: 6px 10px;
-  border-radius: 3px;
-}
-
-.overview-panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 4px 0;
-}
-
-.overview-metrics {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.overview-metric {
-  position: relative;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--line);
-  text-align: left;
-  display: grid;
-  grid-template-columns: 32px 1fr auto;
-  align-items: center;
-  gap: 16px;
-  padding: 17px 6px 17px 10px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    padding-left 0.2s var(--ease-out);
-}
-.overview-metrics li:last-child .overview-metric {
-  border-bottom: 1px solid var(--line);
-}
-.overview-metric::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0;
-  bottom: -1px;
-  width: 2px;
-  background: var(--brass);
-  transform: scaleY(0);
-  transition: transform 0.2s ease;
-}
-.overview-metric:hover,
-.overview-metric.is-active {
-  background: rgba(184, 150, 90, 0.07);
-  padding-left: 16px;
-}
-.overview-metric:hover::before,
-.overview-metric.is-active::before {
-  transform: scaleY(1);
-}
-.overview-metric-node {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--parchment);
-  color: var(--brass);
-  flex: 0 0 auto;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-.overview-metric.is-active .overview-metric-node {
-  background: var(--brass);
-  color: var(--teal);
-}
-.overview-metric-label {
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.03em;
-}
-.overview-metric-value {
-  font-family: "DM Serif Display", serif;
-  font-weight: 400;
-  font-size: 25px;
-  line-height: 1;
-  color: var(--teal);
-  font-variant-numeric: tabular-nums;
-}
-.overview-metric-detail {
-  margin: 20px 6px 0;
-  min-height: 44px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-@media (max-width: 900px) {
-  .overview-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .overview-photo {
-    max-width: 300px;
-  }
-  .overview-panel {
-    height: auto;
-  }
-}
-
-/* Pinned to the foot of the panel, so it lands level with the base of the photo. */
-.overview-inclusions {
-  margin-top: auto;
-  padding-top: 30px;
-}
-.overview-inclusions-label {
-  display: block;
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--brass);
-  margin-bottom: 16px;
-}
-.overview-inclusions ul {
-  list-style: none;
-  margin: 0 0 22px;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-}
-.overview-inclusions li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--brown);
-  font-size: 12px;
-}
-.overview-inclusions li svg {
-  color: var(--brass);
-  flex: 0 0 auto;
-}
-.overview-inclusions .text-link {
-  margin-top: 0;
 }
 
 /* Trust badges: turns the milestone list into a scannable recognition strip. */
@@ -2056,7 +1881,12 @@ cite {
     color: rgba(245, 240, 232, 0.6);
   }
   .menu-toggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    margin: -10px;
     z-index: 22;
   }
   .site-nav {
@@ -3436,520 +3266,6 @@ cite {
 @media (max-width: 900px) {
   .brief-steps::before {
     left: 15px;
-  }
-}
-/* ============================================================
-   STUDIO OVERVIEW — PREMIUM REFINEMENT
-   ============================================================ */
-
-.studio-overview-section {
-  isolation: isolate;
-}
-
-.overview-heading {
-  position: relative;
-}
-
-.overview-heading::after {
-  content: "02";
-  position: absolute;
-  right: 0;
-  top: -22px;
-  z-index: -1;
-  color: rgba(24, 59, 58, 0.045);
-  font-family: "DM Serif Display", serif;
-  font-size: clamp(120px, 18vw, 260px);
-  line-height: 0.8;
-  pointer-events: none;
-}
-
-.overview-grid {
-  align-items: stretch;
-  gap: clamp(34px, 5vw, 78px);
-}
-
-.overview-photo {
-  aspect-ratio: 4 / 5;
-  display: flex;
-  flex-direction: column;
-  overflow: visible;
-  box-shadow: none;
-}
-
-.overview-photo-frame {
-  position: relative;
-  min-height: 0;
-  flex: 1;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: var(--teal-deep);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.overview-photo-frame::before {
-  content: "";
-  position: absolute;
-  inset: 14px;
-  z-index: 2;
-  border: 1px solid rgba(245, 240, 232, 0.34);
-  border-radius: calc(var(--radius-lg) - 6px);
-  pointer-events: none;
-}
-
-.overview-photo img {
-  position: relative;
-  z-index: 0;
-  transform: scale(1.015);
-  filter: saturate(0.84) contrast(0.98);
-  transition:
-    transform 0.8s var(--ease-out),
-    filter 0.4s ease;
-}
-
-.overview-photo:hover img {
-  transform: scale(1.065);
-  filter: saturate(1) contrast(1.02);
-}
-
-.overview-photo-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(16, 45, 44, 0.12),
-      transparent 38%,
-      rgba(16, 45, 44, 0.58)
-    ),
-    linear-gradient(
-      90deg,
-      rgba(16, 45, 44, 0.2),
-      transparent 42%
-    );
-}
-
-.overview-photo-meta {
-  position: absolute;
-  z-index: 3;
-  top: 27px;
-  left: 29px;
-  right: 29px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  color: rgba(245, 240, 232, 0.8);
-  font-size: 8px;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
-.overview-photo-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.overview-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brass-light);
-  box-shadow: 0 0 0 4px rgba(212, 179, 120, 0.16);
-}
-
-.overview-photo-location {
-  text-align: right;
-  opacity: 0.72;
-}
-
-.overview-photo figcaption {
-  position: static;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 15px 2px 0;
-  color: var(--muted);
-  background: transparent;
-  font-size: 9px;
-  letter-spacing: 0.13em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
-.overview-photo figcaption span:last-child {
-  color: var(--brass-dark);
-}
-
-.overview-panel {
-  min-width: 0;
-  padding: 7px 0 0;
-}
-
-.overview-panel-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 22px;
-  margin-bottom: 22px;
-}
-
-.overview-panel-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--brass-dark);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.overview-panel-kicker svg {
-  color: var(--brass);
-}
-
-.overview-panel h3 {
-  margin: 12px 0 0;
-  color: var(--teal);
-  font-family: "DM Serif Display", serif;
-  font-size: clamp(28px, 3vw, 43px);
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
-}
-
-.overview-panel-counter {
-  flex: 0 0 auto;
-  color: var(--muted);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
-.overview-progress {
-  width: 100%;
-  height: 2px;
-  margin-bottom: 18px;
-  overflow: hidden;
-  background: rgba(24, 59, 58, 0.1);
-}
-
-.overview-progress span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--brass-dark),
-    var(--brass-light)
-  );
-  transition: width 0.45s var(--ease-out);
-}
-
-.overview-metrics {
-  display: grid;
-  gap: 8px;
-}
-
-.overview-metric {
-  grid-template-columns: 28px 38px minmax(0, 1fr) auto 18px;
-  min-height: 76px;
-  gap: 13px;
-  padding: 13px 14px 13px 10px;
-  border: 1px solid transparent;
-  border-top: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease,
-    padding-left 0.3s var(--ease-out),
-    transform 0.25s var(--ease-out);
-}
-
-.overview-metrics li:last-child .overview-metric {
-  border-bottom: 0;
-}
-
-.overview-metric::before {
-  top: 9px;
-  bottom: 9px;
-  left: 0;
-  width: 3px;
-  border-radius: 999px;
-}
-
-.overview-metric:hover,
-.overview-metric.is-active {
-  border-color: rgba(184, 150, 90, 0.26);
-  background: rgba(184, 150, 90, 0.09);
-  padding-left: 16px;
-  transform: translateX(3px);
-}
-
-.overview-metric-index {
-  color: var(--brass-dark);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-}
-
-.overview-metric-node {
-  width: 38px;
-  height: 38px;
-  background: var(--parchment);
-  color: var(--brass-dark);
-  transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.3s var(--ease-out);
-}
-
-.overview-metric:hover .overview-metric-node,
-.overview-metric.is-active .overview-metric-node {
-  background: var(--brass);
-  color: var(--teal-deep);
-  transform: rotate(-6deg) scale(1.04);
-}
-
-.overview-metric-content {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.overview-metric-label {
-  color: var(--brown);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.025em;
-}
-
-.overview-metric-subtitle {
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.4;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.overview-metric-value {
-  font-size: clamp(24px, 2.5vw, 33px);
-}
-
-.overview-metric-arrow {
-  color: var(--muted);
-  opacity: 0.45;
-  transition:
-    color 0.2s ease,
-    opacity 0.2s ease,
-    transform 0.25s var(--ease-out);
-}
-
-.overview-metric:hover .overview-metric-arrow,
-.overview-metric.is-active .overview-metric-arrow {
-  color: var(--brass-dark);
-  opacity: 1;
-  transform: translateX(3px);
-}
-
-.overview-metric-detail {
-  position: relative;
-  min-height: 94px;
-  margin: 18px 5px 0;
-  padding: 18px 0 0 18px;
-  border-top: 1px solid var(--line);
-}
-
-.overview-metric-detail::before {
-  content: "";
-  position: absolute;
-  top: 18px;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: var(--brass);
-}
-
-.overview-detail-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--brass-dark);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.overview-metric-detail p {
-  max-width: 470px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-  animation: overview-detail-in 0.35s var(--ease-out) both;
-}
-
-@keyframes overview-detail-in {
-  from {
-    opacity: 0;
-    transform: translateY(7px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.overview-inclusions {
-  margin-top: auto;
-  padding-top: 32px;
-}
-
-.overview-inclusions-label {
-  margin-bottom: 17px;
-  color: var(--brass-dark);
-  font-weight: 700;
-}
-
-.overview-inclusions ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 11px 22px;
-  margin-bottom: 25px;
-}
-
-.overview-inclusions li {
-  align-items: flex-start;
-  gap: 9px;
-  color: var(--brown);
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-.overview-check {
-  width: 20px;
-  height: 20px;
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid rgba(184, 150, 90, 0.35);
-  border-radius: 50%;
-  background: rgba(184, 150, 90, 0.1);
-  color: var(--brass-dark);
-}
-
-.overview-collection-link {
-  margin-top: 0;
-}
-
-/* Tablet */
-@media (max-width: 900px) {
-  .overview-heading::after {
-    right: -8px;
-    top: 4px;
-    font-size: 140px;
-  }
-
-  .overview-photo {
-    max-width: none;
-  }
-
-  .overview-panel {
-    padding-top: 0;
-  }
-
-  .overview-metric {
-    grid-template-columns: 25px 38px minmax(0, 1fr) auto 16px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .overview-heading::after {
-    top: 10px;
-    font-size: 110px;
-  }
-
-  .overview-photo {
-    aspect-ratio: 1 / 1.12;
-  }
-
-  .overview-photo-meta {
-    top: 22px;
-    left: 22px;
-    right: 22px;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .overview-photo-location {
-    text-align: left;
-  }
-
-  .overview-panel-header {
-    margin-bottom: 18px;
-  }
-
-  .overview-panel-counter {
-    padding-top: 3px;
-  }
-
-  .overview-metrics {
-    display: flex;
-    gap: 8px;
-    margin-right: -22px;
-    padding: 2px 22px 8px 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-
-  .overview-metrics::-webkit-scrollbar {
-    display: none;
-  }
-
-  .overview-metric {
-    min-width: 255px;
-    grid-template-columns: 24px 36px minmax(0, 1fr) auto;
-    scroll-snap-align: start;
-  }
-
-  .overview-metric-arrow {
-    display: none;
-  }
-
-  .overview-metric-subtitle {
-    white-space: normal;
-  }
-
-  .overview-metric-detail {
-    min-height: 116px;
-  }
-
-  .overview-inclusions ul {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .overview-photo img,
-  .overview-metric,
-  .overview-metric-node,
-  .overview-metric-arrow,
-  .overview-progress span {
-    transition: none;
-  }
-
-  .overview-metric-detail p {
-    animation: none;
   }
 }
 
@@ -5549,5 +4865,803 @@ cite {
   }
 }
 
+/* ============================================================
+   EXTRA-SMALL PHONES (≤480px)
+   Purely additive refinements on top of the existing 900px/600px
+   breakpoints — nothing above 480px is touched, so no section's
+   current tablet/mobile look changes. These only stack the couple
+   of grids that were still 2-column (or 2×2) all the way down to
+   320–375px, and tidy up padding at that size.
+   ============================================================ */
+@media (max-width: 480px) {
+  /* Footer stayed at 2 columns down to the smallest phones. */
+  .site-footer {
+    grid-template-columns: 1fr;
+  }
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  /* Process steps stayed 2×2 down to the smallest phones. */
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+  .process-step {
+    border-right: 0;
+    margin-right: 0;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .process-step:last-child {
+    border-bottom: 0;
+  }
+}
 
 
+
+
+/* ============================================================
+   STUDIO OVERVIEW SECTION — single source of truth
+   (Do not duplicate these rules elsewhere in this file; all
+   responsive behaviour for .studio-overview-section lives here,
+   from large desktops down to small phones.)
+   ============================================================ */
+
+.studio-overview-section {
+  isolation: isolate;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Heading row: title + intro paragraph, with a giant faded "02"
+   watermark behind the title. Grid on desktop, stacks on tablet. */
+.overview-heading {
+  position: relative;
+}
+
+.overview-heading::after {
+  content: "02";
+  position: absolute;
+  right: 0;
+  top: -22px;
+  z-index: -1;
+  color: rgba(24, 59, 58, 0.045);
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(120px, 18vw, 260px);
+  line-height: 0.8;
+  pointer-events: none;
+}
+
+.studio-overview-section .section-heading-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 380px);
+  align-items: end;
+  gap: clamp(24px, 5vw, 64px);
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.studio-overview-section .section-heading-row > div,
+.studio-overview-section .section-heading-row > p {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.studio-overview-section .section-heading-row h2 {
+  font-size: clamp(36px, 5vw, 68px);
+  line-height: 0.98;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.studio-overview-section .section-heading-row > p {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 0 4px auto;
+  font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* Grid: photo left, panel right. minmax() lets the photo column
+   shrink gracefully down to the tablet breakpoint, where it stacks. */
+.overview-grid {
+  width: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.62fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(24px, 4vw, 64px);
+}
+
+/* Photo column */
+.overview-photo {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.overview-photo-frame {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--teal-deep);
+  box-shadow: var(--shadow-card-hover);
+  width: 100%;
+}
+
+.overview-photo-frame::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 2;
+  border: 1px solid rgba(245, 240, 232, 0.34);
+  border-radius: calc(var(--radius-lg) - 6px);
+  pointer-events: none;
+}
+
+.overview-photo img {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.015);
+  filter: saturate(0.84) contrast(0.98);
+  transition:
+    transform 0.8s var(--ease-out),
+    filter 0.4s ease;
+}
+
+.overview-photo:hover img {
+  transform: scale(1.065);
+  filter: saturate(1) contrast(1.02);
+}
+
+.overview-photo-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(16, 45, 44, 0.12),
+      transparent 38%,
+      rgba(16, 45, 44, 0.58)
+    ),
+    linear-gradient(
+      90deg,
+      rgba(16, 45, 44, 0.2),
+      transparent 42%
+    );
+}
+
+.overview-photo-meta {
+  position: absolute;
+  z-index: 3;
+  top: 27px;
+  left: 29px;
+  right: 29px;
+  max-width: calc(100% - 58px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  color: rgba(245, 240, 232, 0.8);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.overview-photo-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.overview-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brass-light);
+  box-shadow: 0 0 0 4px rgba(212, 179, 120, 0.16);
+}
+
+.overview-photo-location {
+  text-align: right;
+  opacity: 0.72;
+  overflow-wrap: anywhere;
+}
+
+.overview-photo figcaption {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 2px 0;
+  color: var(--muted);
+  background: transparent;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.overview-photo figcaption span:last-child {
+  color: var(--brass-dark);
+}
+
+/* Panel column */
+.overview-panel {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 7px 0 0;
+  margin: 0;
+}
+
+.overview-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 22px;
+  min-width: 0;
+}
+
+.overview-panel-header > div {
+  min-width: 0;
+}
+
+.overview-panel-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brass-dark);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.overview-panel-kicker svg {
+  color: var(--brass);
+}
+
+.overview-panel h3 {
+  margin: 12px 0 0;
+  color: var(--teal);
+  font-family: "DM Serif Display", serif;
+  font-size: clamp(26px, 3vw, 43px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  overflow-wrap: break-word;
+}
+
+.overview-panel-counter {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.overview-progress {
+  width: 100%;
+  height: 2px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  background: rgba(24, 59, 58, 0.1);
+}
+
+.overview-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--brass-dark),
+    var(--brass-light)
+  );
+  transition: width 0.45s var(--ease-out);
+}
+
+/* Metrics list */
+.overview-metrics {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.overview-metric {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  grid-template-columns: 28px 38px minmax(0, 1fr) auto 18px;
+  min-height: 76px;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 13px);
+  padding: 13px 14px 13px 10px;
+  border: 1px solid transparent;
+  border-top: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  display: grid;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    padding-left 0.3s var(--ease-out),
+    transform 0.25s var(--ease-out);
+}
+
+.overview-metrics li:last-child .overview-metric {
+  border-bottom: 0;
+}
+
+.overview-metric::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 0;
+  width: 3px;
+  border-radius: 999px;
+}
+
+.overview-metric:hover,
+.overview-metric.is-active {
+  border-color: rgba(184, 150, 90, 0.26);
+  background: rgba(184, 150, 90, 0.09);
+  padding-left: 16px;
+  transform: translateX(3px);
+}
+
+.overview-metric-index {
+  color: var(--brass-dark);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.overview-metric-node {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--parchment);
+  color: var(--brass-dark);
+  flex: 0 0 auto;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.3s var(--ease-out);
+}
+
+.overview-metric:hover .overview-metric-node,
+.overview-metric.is-active .overview-metric-node {
+  background: var(--brass);
+  color: var(--teal-deep);
+  transform: rotate(-6deg) scale(1.04);
+}
+
+.overview-metric-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.overview-metric-label {
+  color: var(--brown);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  overflow-wrap: anywhere;
+}
+
+.overview-metric-subtitle {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overview-metric-value {
+  font-size: clamp(22px, 2.5vw, 33px);
+  white-space: nowrap;
+}
+
+.overview-metric-arrow {
+  flex: 0 0 auto;
+  color: var(--muted);
+  opacity: 0.45;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.25s var(--ease-out);
+}
+
+.overview-metric:hover .overview-metric-arrow,
+.overview-metric.is-active .overview-metric-arrow {
+  color: var(--brass-dark);
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* Detail panel */
+.overview-metric-detail {
+  position: relative;
+  min-height: 94px;
+  margin: 18px 5px 0;
+  padding: 18px 0 0 18px;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+
+.overview-metric-detail::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--brass);
+}
+
+.overview-detail-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--brass-dark);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.overview-metric-detail p {
+  max-width: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  animation: overview-detail-in 0.35s var(--ease-out) both;
+}
+
+@keyframes overview-detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Inclusions */
+.overview-inclusions {
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.overview-inclusions-label {
+  margin-bottom: 17px;
+  color: var(--brass-dark);
+  font-weight: 700;
+}
+
+.overview-inclusions ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px 22px;
+  margin-bottom: 25px;
+}
+
+.overview-inclusions li {
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--brown);
+  font-size: 11px;
+  line-height: 1.45;
+  min-width: 0;
+}
+
+.overview-check {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(184, 150, 90, 0.35);
+  border-radius: 50%;
+  background: rgba(184, 150, 90, 0.1);
+  color: var(--brass-dark);
+}
+
+.overview-inclusions li > span:last-child {
+  overflow-wrap: anywhere;
+}
+
+.overview-collection-link {
+  margin-top: 0;
+  max-width: 100%;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .overview-photo img,
+  .overview-metric,
+  .overview-metric-node,
+  .overview-metric-arrow,
+  .overview-progress span {
+    transition: none;
+  }
+
+  .overview-metric-detail p {
+    animation: none;
+  }
+}
+
+/* ====================
+   LAPTOP (≤1180px)
+   Keep the two-column grid, just tighten the photo column so
+   it doesn't crowd the panel on smaller laptop screens.
+   ==================== */
+@media (max-width: 1180px) {
+  .overview-grid {
+    grid-template-columns: minmax(200px, 0.55fr) minmax(0, 1fr);
+  }
+}
+
+/* ====================
+   TABLET (≤900px)
+   Stack photo above panel.
+   ==================== */
+@media (max-width: 900px) {
+  .studio-overview-section.section-pad {
+    padding: 56px var(--gutter);
+  }
+
+  .overview-heading::after {
+    right: -8px;
+    top: 4px;
+    font-size: 140px;
+  }
+
+  .studio-overview-section .section-heading-row {
+    display: block;
+    margin-bottom: 32px;
+  }
+
+  .studio-overview-section .section-heading-row h2 {
+    margin-top: 24px;
+  }
+
+  .studio-overview-section .section-heading-row > p {
+    max-width: 100%;
+    margin: 20px 0 0;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .overview-photo {
+    width: min(100%, 480px);
+    aspect-ratio: 16 / 10;
+    margin: 0 auto;
+  }
+
+  .overview-panel {
+    padding-top: 0;
+  }
+
+  .overview-metric {
+    grid-template-columns: 25px 38px minmax(0, 1fr) auto 16px;
+  }
+
+  .overview-inclusions {
+    margin-top: 28px;
+  }
+}
+
+/* ====================
+   MOBILE (≤640px)
+   ==================== */
+@media (max-width: 640px) {
+  .studio-overview-section.section-pad {
+    padding: 44px 18px;
+  }
+
+  .overview-heading::after {
+    top: 10px;
+    font-size: 110px;
+  }
+
+  .studio-overview-section .section-heading-row {
+    margin-bottom: 26px;
+  }
+
+  .studio-overview-section .section-heading-row h2 {
+    font-size: clamp(32px, 10vw, 52px);
+    line-height: 0.95;
+  }
+
+  .studio-overview-section .section-heading-row > p {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .overview-grid {
+    gap: 28px;
+  }
+
+  .overview-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1.05;
+  }
+
+  .overview-photo-frame::before {
+    inset: 8px;
+  }
+
+  .overview-photo-meta {
+    top: 22px;
+    left: 22px;
+    right: 22px;
+    max-width: calc(100% - 44px);
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 7.5px;
+  }
+
+  .overview-photo-location {
+    text-align: left;
+  }
+
+  .overview-photo figcaption {
+    padding-top: 10px;
+    font-size: 8.5px;
+  }
+
+  .overview-panel-header {
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .overview-panel h3 {
+    font-size: 26px;
+  }
+
+  .overview-panel-counter {
+    padding-top: 3px;
+    font-size: 8px;
+  }
+
+  /* Metric list becomes a horizontally scrollable snap carousel so
+     each metric keeps its full label/value legible on a narrow screen. */
+  .overview-metrics {
+    display: flex;
+    gap: 8px;
+    margin-right: -18px;
+    padding: 2px 18px 8px 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .overview-metrics::-webkit-scrollbar {
+    display: none;
+  }
+
+  .overview-metric {
+    min-width: 250px;
+    grid-template-columns: 24px 36px minmax(0, 1fr) auto;
+    scroll-snap-align: start;
+  }
+
+  .overview-metric-arrow {
+    display: none;
+  }
+
+  .overview-metric-subtitle {
+    white-space: normal;
+  }
+
+  .overview-metric-detail {
+    min-height: 100px;
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .overview-inclusions {
+    padding-top: 20px;
+  }
+
+  .overview-inclusions ul {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .overview-inclusions li {
+    font-size: 11px;
+  }
+
+  .overview-collection-link {
+    font-size: 9px;
+  }
+}
+
+/* ====================
+   SMALL MOBILE (≤390px)
+   ==================== */
+@media (max-width: 390px) {
+  .studio-overview-section.section-pad {
+    padding-inline: 14px;
+  }
+
+  .overview-heading::after {
+    font-size: 90px;
+  }
+
+  .studio-overview-section .section-heading-row h2 {
+    font-size: 34px;
+  }
+
+  .overview-photo {
+    aspect-ratio: 1 / 0.95;
+  }
+
+  .overview-metric {
+    min-width: 220px;
+  }
+
+  .overview-metric-value {
+    font-size: 18px;
+  }
+
+  .overview-panel h3 {
+    font-size: 24px;
+  }
+}
+
+/* Belt-and-braces: never let this section cause horizontal scroll
+   on any device, regardless of content length. */
+@media (max-width: 900px) {
+  .studio-overview-section,
+  .overview-grid,
+  .overview-panel,
+  .overview-photo,
+  .overview-metric {
+    max-width: 100%;
+  }
+}
